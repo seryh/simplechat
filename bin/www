@@ -5,7 +5,7 @@
  */
 
 var app = require('../app');
-var wsHandler = require('../modules/wsHandler');
+var wsObserver = require('../modules/wsObserver');
 var debug = require('debug')('simplechat:server');
 var http = require('http');
 var WebSocketServer = require('ws').Server;
@@ -24,6 +24,7 @@ app.set('port', port);
 
 var server = http.createServer(app);
 var wss = new WebSocketServer({ server: server });
+var wsHandler = new wsObserver();
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -32,7 +33,8 @@ var wss = new WebSocketServer({ server: server });
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
-wss.on('connection', wsHandler);
+
+wss.on('connection', wsHandler.listener());
 
 
 /**

@@ -61,6 +61,21 @@
         self.socket.onmessage = function(event) {
             if (self.options.debug)
                 console.debug('chatApp.ws:onmessage',event.data);
+            var data;
+            try {
+                data = JSON.parse(event.data);
+                if( data &&
+                    Object.prototype.toString.call( data ) === '[object Array]' &&
+                    data.length === 2 ) {
+
+                    console.log('->', data);
+                } else {
+                    return false;
+                }
+            } catch (error) {
+                if (self.options.debug)
+                    console.error('chatApp.ws:onerror', error.message);
+            }
         };
 
         self.socket.onerror = function(error) {
