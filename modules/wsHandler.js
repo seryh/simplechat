@@ -1,17 +1,28 @@
-function originIsAllowed(origin) {
-    // put logic here to detect whether the specified origin is allowed.
-    return true;
-}
-
-var handler = function(ws) {
+module.exports = function(ws) {
     console.log('ws connect');
 
-    ws.on('message', function incoming(message) {
-        console.log('received: %s', message);
+    var _emit = function(event, data) {
+        data = (data === undefined) ? null : data;
+        return ws.send(JSON.stringify([event, data]));
+    };
+
+    ws.on('message', function incoming(json) {
+        var data;
+        try {
+            console.log('->', json);
+            data = JSON.parse(json);
+            if( data
+                && Object.prototype.toString.call( data ) === '[object Array]'
+                && data.length === 2 ) {
+
+                console.log('->', json);
+            } else {
+                _emit('error', 'invalid data');
+            }
+        } catch (er) {
+            _emit('error', er.message);
+        }
     });
 
     ws.send('something');
 };
-
-
-module.exports = handler;

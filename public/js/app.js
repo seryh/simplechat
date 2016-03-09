@@ -11,13 +11,27 @@
 
         self.options = _extend({
             debug: false,
-            reconTimeout: 3000
+            reconTimeout: 3000,
+            onConnect: function() {},
+            onClose: function() {}
         }, opt);
 
         self.socket = null;
         self.UUIDhistory = [];
 
         self.wsOpen();
+    };
+
+    chatApp.prototype.sendNick = function (nick) {
+        var self = this;
+        console.log('nick', nick);
+        if (self.socket.readyState !== 1) return false;
+        self.emit('setNick', nick);
+    };
+
+    chatApp.prototype.emit = function(event, data) {
+        data = (data === undefined) ? null : data;
+        return this.socket.send(JSON.stringify([event, data]));
     };
 
     chatApp.prototype.wsOpen = function () {
@@ -32,13 +46,15 @@
             if (self.options.debug)
                 console.info('chatApp.ws:onopen');
             clearTimeout(_timeout);
-            self.socket.send('test');
+            self.emit('ping');
+            self.options.onConnect(self.socket);
         };
 
         self.socket.onclose = function(event) {
             clearTimeout(_timeout);
             if (self.options.debug)
                 console.debug('chatApp.ws:onclose','code: ' + event.code + ' reason: ' + event.reason);
+            self.options.onClose();
             self.wsOpen();
         };
 

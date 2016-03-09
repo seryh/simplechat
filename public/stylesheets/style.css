@@ -1,8 +1,45 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+
+#chat-box {
+  width: 100%;
+  height: 452px;
+  border: solid 1px #d5d5d5;
+  overflow-y: scroll;
 }
 
-a {
-  color: #00B7FF;
+#chat-box table td.chat-date {
+  width: 50px;
+}
+
+#chat-box table .chat-date span {
+  color: #e5e5e5;
+  font-size: 12px;
+}
+#chat-box table .chat-date strong {
+  font-size: 12px;
+}
+
+#chat-box table .chat-date {
+  text-align: center;
+  vertical-align: middle;
+  padding: 0;
+  padding-left: 5px;
+  padding-right: 15px;
+}
+
+#chat-box .chat-nick {
+  color: #7a43b6;
+}
+
+#chat-box table .chat-msg {
+  vertical-align: middle;
+  padding: 0;
+  padding-left: 5px;
+}
+
+#chat-box .table {
+  margin-bottom: 0px;
+}
+
+.newmsg td {
+  background: #fcf8e3;
 }
