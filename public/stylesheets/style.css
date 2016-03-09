@@ -1,4 +1,8 @@
 
+.online {
+    color: #4cae4c;
+}
+
 #chat-box {
   width: 100%;
   height: 452px;

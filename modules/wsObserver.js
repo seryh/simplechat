@@ -13,12 +13,20 @@ wsObserver.prototype.countUsers = function() {
     return Object.keys(this.users).length;
 };
 
+wsObserver.prototype.Events = {
+    'setNick': function(nick, self) {
+        this.nick = nick;
+        console.log(self.users);
+    }
+};
+
 wsObserver.prototype.listener = function() {
     var self = this;
 
     return function(socket) {
         var _user = {
                 'id':  _.uniqueId(),
+                'nick': null,
                 'socket': socket
             };
 
@@ -29,15 +37,20 @@ wsObserver.prototype.listener = function() {
         };
 
         socket.on('message', function incoming(json) {
-            var data;
+            var dataArray;
             try {
-                data = JSON.parse(json);
-                if( data &&
-                    Object.prototype.toString.call( data ) === '[object Array]' &&
-                    data.length === 2 ) {
+                dataArray = JSON.parse(json);
+                if( dataArray &&
+                    Object.prototype.toString.call( dataArray ) === '[object Array]' &&
+                    dataArray.length === 2 ) {
 
-                    console.log('->', data);
-                    console.log('countUsers:', self.countUsers());
+                    var event = dataArray[0],
+                        data = dataArray[1];
+
+                    if ( !Boolean(self.Events[event]) ) return false;
+
+                    self.Events[event].call(_user, data, self);
+
                 } else {
                     _emit('error', 'invalid data');
                 }
@@ -48,7 +61,7 @@ wsObserver.prototype.listener = function() {
 
         socket.on('close', function close() {
             delete self.users[_user.id];
-            console.log('disconnect countUsers:', self.countUsers());
+            //console.log('disconnect countUsers:', self.countUsers());
         });
     };
 };

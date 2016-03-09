@@ -33,7 +33,7 @@
     var ChApp = new chatApp({
         debug: true,
         onConnect: function() {
-            document.getElementById('ws-status').innerHTML = 'Онлайн';
+            document.getElementById('ws-status').innerHTML = '<span class="online">Онлайн<span>';
         },
         onClose: function() {
             document.getElementById('ws-status').innerHTML = 'Подключаюсь...';
