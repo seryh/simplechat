@@ -1,5 +1,7 @@
 ##simplechat
 
+[![Build Status](https://travis-ci.org/seryh/simplechat.svg?branch=master)](https://travis-ci.org/seryh/simplechat)
+
 ##При разработке использовались
 node v0.12.2
 npm v2.7.4
