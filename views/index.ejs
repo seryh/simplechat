@@ -40,10 +40,45 @@
     </div>
 
     <div style="clear: both;"></div>
-    <div class="col-xs-12 col-sm-6 col-md-8">
-        <div></div>
+
+    <div id="chat-box-tools">
+        <div id="chat-box" class="col-xs-12 col-md-8">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th style="width: 200px;"></th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><strong>dd.MM.yyyy HH:mm.ss</strong></td>
+                    <td>jon: hi all</td>
+                </tr>
+                <tr>
+                    <td><strong>dd.MM.yyyy HH:mm.ss</strong></td>
+                    <td>jon: hi all</td>
+                </tr>
+                <tr>
+                    <td><strong>dd.MM.yyyy HH:mm.ss</strong></td>
+                    <td>jon: hi all</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="user-list" class="col-xs-6 col-md-4">
+            <table class="table">
+                <tbody>
+                <tr> <td>jon</td></tr>
+                <tr> <td>jon</td></tr>
+                <tr> <td>jon</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div style="clear: both;"></div>
     </div>
-    <div style="clear: both;"></div>
+
 </div> <!-- /container -->
 
 <script type="text/javascript">
@@ -72,6 +107,7 @@
             return false;
         }
         UI.html('nick-error', '');
+        //todo: show chat
     };
 </script>
 
