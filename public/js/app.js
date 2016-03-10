@@ -29,6 +29,7 @@
             reconTimeout: 3000,
             onMessage: function() {},
             onJoin: function() {},
+            onLeft: function() {},
             onConnect: function() {},
             onClose: function() {}
         }, opt);
@@ -82,11 +83,17 @@
             var self = this;
             self.options.onMessage(req.data);
         },
-        'join': function(req) {
+        'join': function(req) { //событие - новый пользователь входит на канал
             var self = this;
             self.options.onJoin(req.data);
             if (self.options.debug)
-                console.info('Join to chat ', req.data);
+                console.info('Join to chat: ', req.data);
+        },
+        'left': function(req) { //событие - кто то из пользователей покидает канал
+            var self = this;
+            self.options.onLeft(req.data);
+            if (self.options.debug)
+                console.info('the user has left the chat: ', req.data);
         }
     };
 

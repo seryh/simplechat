@@ -102,7 +102,7 @@
 
             messages.forEach(function(user) {
                 html += '<tr><td class="chat-date">' + _self.formatDate(new Date(user.date)) + '</td>';
-                html += '<td class="chat-msg">' + user.nick +':'+ user.msg + '</td></tr>';
+                html += '<td class="chat-msg"><span>' + user.nick +':</span>'+ user.msg + '</td></tr>';
             });
 
             html += '</tbody></table>';
@@ -116,8 +116,15 @@
 
     var ChApp = new chatApp({
         debug: true,
+        onLeft: function(nick) {
+            ChApp.getUsers(function(resp) {
+                UI.renderUserList('user-list', resp.result);
+            });
+        },
         onJoin: function(nick) {
-
+            ChApp.getUsers(function(resp) {
+                UI.renderUserList('user-list', resp.result);
+            });
         },
         onMessage: function(msgData) {
             messages.push(msgData);
@@ -150,7 +157,6 @@
         UI.hideEl('auth-box');
 
         ChApp.getUsers(function(resp) {
-            if (resp.error) return false;
             UI.renderUserList('user-list', resp.result);
         });
 
@@ -160,7 +166,6 @@
             UI.renderMassageBox('chat-box', messages);
         });
 
-        //.value = '';
     };
 </script>
 

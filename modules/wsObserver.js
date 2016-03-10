@@ -40,6 +40,10 @@ wsObserver.prototype.onJoinUser = function(nick) {
     this.broadcast('join', nick)
 };
 
+wsObserver.prototype.onLeftUser = function(nick) {
+    this.broadcast('left', nick)
+};
+
 wsObserver.prototype.Events = {
     'message': function(req, respond) {
         if (!req.user.nick) {
@@ -134,6 +138,7 @@ wsObserver.prototype.listener = function() {
 
         socket.on('close', function close() {
             delete self.users[_user.id];
+            self.onLeftUser( _user.nick );
             //console.log('disconnect countUsers:', self.countUsers());
         });
     };
