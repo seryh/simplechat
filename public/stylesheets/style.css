@@ -3,7 +3,22 @@
     color: #4cae4c;
 }
 
+#auth-box {
+    width: 300px;
+    margin: auto auto;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 30px;
+}
 
+#send-msg {
+    margin-top: 1px;
+    height: 72px;
+}
+
+#msg-textarea {
+    height: 72px;
+}
 
 #nick-error {
   color: #d43f3a;

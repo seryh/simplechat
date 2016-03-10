@@ -23,6 +23,7 @@ var _protocol = {
 
 var wsObserver = function() {
     this.users = {};
+    this.messages = [];
     this._protocol = _protocol;
 };
 
@@ -40,6 +41,43 @@ wsObserver.prototype.onJoinUser = function(nick) {
 };
 
 wsObserver.prototype.Events = {
+    'message': function(req, respond) {
+        if (!req.user.nick) {
+            respond({error: 'ошибка доступа'});
+            return false;
+        }
+
+        var self = this,
+            msgData = {
+                data: new Date(),
+                nick: req.user.nick,
+                msg: req.data
+            };
+
+        self.messages.push(msgData);
+        self.broadcast('newMessage', msgData);
+        self.messages =_.sortBy(self.messages, function(o) { return o.date; });
+
+        if (self.messages.length > 100) { //храним только последние 100 сообщений
+            self.messages = self.messages.slice(1, self.messages.length.length);
+        }
+    },
+    'getUsers': function(req, respond) {
+        if (!req.user.nick) {
+            respond({error: 'ошибка доступа'});
+            return false;
+        }
+        var self = this;
+        respond({result: _.chain(self.users)
+                            .filter(function(user){ return user.nick !== null; })
+                            .map(function(user){ return {nick: user.nick} })
+                            .value() });
+    },
+    'getMessages': function(req, respond) {
+        if (!req.user.nick) return false;
+        var self = this;
+        respond({result: self.messages});
+    },
     'setNick': function(req, respond) {
         var self = this;
 
@@ -104,7 +142,8 @@ wsObserver.prototype.listener = function() {
 wsObserver.prototype.broadcast = function(event, data) {
     var self = this;
     _.each(self.users, function(user) {
-        self.emit(user.socket, event, data);
+        if (Boolean(user.nick))
+            self.emit(user.socket, event, data);
     });
 };
 

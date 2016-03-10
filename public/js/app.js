@@ -76,6 +76,9 @@
         'error': function(req) {
             alert('WS error:' + req.data + ' uuid:' + req.uuid);
         },
+        'newMessage': function(dataMsg) {
+            //todo
+        },
         'join': function(nick) {
             console.info('в чат вошел ', nick);
         }
@@ -88,6 +91,18 @@
         self.emit('setNick', nick, cb);
     };
 
+    chatApp.prototype.sendMessage = function (msg) {
+        var self = this;
+        if (self.socket.readyState !== 1) return false;
+        self.emit('message', msg);
+    };
+
+    chatApp.prototype.getUsers = function (cb) {
+        cb = cb || function() {};
+        var self = this;
+        if (self.socket.readyState !== 1) return false;
+        self.emit('getUsers', null, cb);
+    };
 
     chatApp.prototype.wsOpen = function () {
         var self = this;
@@ -101,7 +116,7 @@
             if (self.options.debug)
                 console.info('chatApp.ws:onopen');
             clearTimeout(_timeout);
-            self.emit('ping');
+            //self.emit('ping');
             self.options.onConnect(self.socket);
         };
 

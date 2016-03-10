@@ -20,18 +20,13 @@
             <ul class="nav navbar-nav">
                 <li><div id="ws-status" style="color: #fff;padding-top: 16px;">Подключаюсь...</div></li>
             </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <ul class="nav navbar-nav">
-                    <li><a href="#logout">Выйти</a></li>
-                </ul>
-            </ul>
         </div>
     </div>
 </div>
 
 <div class="container theme-showcase" style="padding-top: 60px;">
 
-    <div style="width: 300px; margin: auto auto;border: 1px solid #ccc; border-radius: 3px;padding: 30px;">
+    <div id="auth-box" style="display: none;">
         <div class="form-group">
             <input type="text" class="form-control" id="nick-input" placeholder="Enter Nick">
         </div>
@@ -41,7 +36,7 @@
 
     <div style="clear: both;"></div>
 
-    <div id="chat-box-tools">
+    <div id="chat-box-tools" style="display: none;">
 
         <div class="col-xs-12 col-md-8">
             <div id="chat-box">
@@ -78,7 +73,7 @@
 
 
         <div id="user-list" class="col-xs-6 col-md-4">
-            <table class="table">
+            <table class="table" style="width: 150px;float: right;">
                 <tbody>
                 <tr> <td>jon</td></tr>
                 <tr> <td>jon</td></tr>
@@ -98,6 +93,12 @@
         el: function(id) {
             return document.getElementById(id);
         },
+        showEl: function(id) {
+            return this.el(id).style.display = 'block';
+        },
+        hideEl: function(id) {
+            return this.el(id).style.display = 'none';
+        },
         html: function(id, html) {
             return this.el(id).innerHTML = html;
         }
@@ -107,9 +108,12 @@
         debug: true,
         onConnect: function() {
             UI.html('ws-status','<span class="online">Онлайн<span>');
+            UI.showEl('auth-box');
         },
         onClose: function() {
             UI.html('ws-status', 'Подключаюсь...');
+            UI.hideEl('auth-box');
+            UI.hideEl('chat-box-tools');
         }
     }).wsOpen();
 
@@ -119,7 +123,12 @@
             return false;
         }
         UI.html('nick-error', '');
-        //todo: show chat
+        UI.showEl('chat-box-tools');
+        UI.hideEl('auth-box');
+
+        ChApp.getUsers(function(resp) {
+            console.log('users',resp.result);
+        });
     };
 </script>
 
