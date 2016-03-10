@@ -100,9 +100,15 @@
             var _self = this;
             var html = '<table class="table"><tbody>';
 
-            messages.forEach(function(user) {
-                html += '<tr><td class="chat-date">' + _self.formatDate(new Date(user.date)) + '</td>';
-                html += '<td class="chat-msg"><span>' + user.nick +':</span>'+ user.msg + '</td></tr>';
+            messages.forEach(function(msg) {
+                if (msg.type && msg.type == 'system') {
+                    html += '<tr class="system-msg"><td class="chat-date">' + _self.formatDate(new Date(msg.date)) + '</td>';
+                    html += '<td class="chat-msg">'+ msg.msg + '</td></tr>';
+                } else {
+                    html += '<tr><td class="chat-date">' + _self.formatDate(new Date(msg.date)) + '</td>';
+                    html += '<td class="chat-msg"><span>' + msg.nick +':</span>'+ msg.msg + '</td></tr>';
+                }
+
             });
 
             html += '</tbody></table>';
@@ -120,11 +126,25 @@
             ChApp.getUsers(function(resp) {
                 UI.renderUserList('user-list', resp.result);
             });
+            messages.push({
+                date: new Date(),
+                nick: nick,
+                type: 'system',
+                msg: 'Пользователь '+ nick + ' покинул чат'
+            });
+            UI.renderMassageBox('chat-box', messages);
         },
         onJoin: function(nick) {
             ChApp.getUsers(function(resp) {
                 UI.renderUserList('user-list', resp.result);
             });
+            messages.push({
+                date: new Date(),
+                nick: nick,
+                type: 'system',
+                msg: 'Пользователь '+ nick + ' входит в чат'
+            });
+            UI.renderMassageBox('chat-box', messages);
         },
         onMessage: function(msgData) {
             messages.push(msgData);

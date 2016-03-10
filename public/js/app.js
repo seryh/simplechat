@@ -83,15 +83,16 @@
             var self = this;
             self.options.onMessage(req.data);
         },
-        'join': function(req) { //событие - новый пользователь входит на канал
+        'join': function(req) { //событие - новый пользователь входит в чат
             var self = this;
             self.options.onJoin(req.data);
             if (self.options.debug)
                 console.info('Join to chat: ', req.data);
         },
-        'left': function(req) { //событие - кто то из пользователей покидает канал
+        'left': function(req) { //событие - любой из пользователей покидает чат
             var self = this;
             self.options.onLeft(req.data);
+            console.log(req);
             if (self.options.debug)
                 console.info('the user has left the chat: ', req.data);
         }

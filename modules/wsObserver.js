@@ -138,8 +138,8 @@ wsObserver.prototype.listener = function() {
 
         socket.on('close', function close() {
             delete self.users[_user.id];
-            self.onLeftUser( _user.nick );
-            //console.log('disconnect countUsers:', self.countUsers());
+            if (_user.nick)
+                self.onLeftUser( _user.nick );
         });
     };
 };

@@ -40,6 +40,10 @@
   overflow-y: scroll;
 }
 
+#chat-box .system-msg {
+    color: #419641;
+}
+
 .table-user-list {
     width: 150px;
     float: right;
