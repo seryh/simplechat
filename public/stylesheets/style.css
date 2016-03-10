@@ -50,10 +50,7 @@
 }
 
 #chat-box table .chat-date span {
-  color: #e5e5e5;
-  font-size: 12px;
-}
-#chat-box table .chat-date strong {
+  color: #999999;
   font-size: 12px;
 }
 
@@ -63,6 +60,7 @@
   padding: 0;
   padding-left: 5px;
   padding-right: 15px;
+    font-size: 14px;
 }
 
 #chat-box .chat-nick {

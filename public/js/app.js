@@ -142,8 +142,6 @@
         };
 
         self.socket.onmessage = function(event) {
-            if (self.options.debug)
-                console.debug('chatApp.ws:onmessage',event.data);
             var dataArray;
             try {
                 dataArray = JSON.parse(event.data);

@@ -74,7 +74,7 @@
             if (mm.length < 2) mm = "0" + mm;
             if (dd.length < 2) dd = "0" + dd;
             if (mo.length < 2) mo = "0" + mo;
-            return dd+'.'+mo+'.'+year +' '+hh+':'+mm;
+            return '<span>'+ dd+'.'+mo+'.'+year +'</span> '+hh+':'+mm;
         },
         showEl: function(id) {
             return this.el(id).style.display = 'block';
@@ -102,12 +102,15 @@
 
             messages.forEach(function(user) {
                 html += '<tr><td class="chat-date">' + _self.formatDate(new Date(user.date)) + '</td>';
-                html += '<td>' + user.nick +':'+ user.msg + '</td></tr>';
+                html += '<td class="chat-msg">' + user.nick +':'+ user.msg + '</td></tr>';
             });
 
             html += '</tbody></table>';
 
-            return this.html(elID, html);
+            this.html(elID, html);
+            this.el(elID).scrollTop = this.el(elID).scrollHeight;
+
+            return this;
         }
     };
 
