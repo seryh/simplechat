@@ -46,7 +46,7 @@ wsObserver.prototype.Events = {
         var findNick = _.where(self.users, {'nick':req.data});
 
         if (findNick.length) {
-            respond({error: 'Этот псевдоним уже занят'});
+            respond({error: 'Этот псевдоним уже занят, введите другой'});
             return false;
         }
 
