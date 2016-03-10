@@ -29,25 +29,14 @@
     </div>
 </div>
 
-<script type="text/javascript">
-    var ChApp = new chatApp({
-        debug: true,
-        onConnect: function() {
-            document.getElementById('ws-status').innerHTML = '<span class="online">Онлайн<span>';
-        },
-        onClose: function() {
-            document.getElementById('ws-status').innerHTML = 'Подключаюсь...';
-        }
-    });
-</script>
-
 <div class="container theme-showcase" style="padding-top: 60px;">
 
     <div style="width: 300px; margin: auto auto;border: 1px solid #ccc; border-radius: 3px;padding: 30px;">
         <div class="form-group">
             <input type="text" class="form-control" id="nick-input" placeholder="Enter Nick">
         </div>
-        <button onclick="ChApp.sendNick(document.getElementById('nick-input').value);" type="button" class="btn btn-default">Ok</button>
+        <button onclick="ChApp.sendNick(document.getElementById('nick-input').value, onSetNick);" type="button" class="btn btn-default">Ok</button>
+        <div id="nick-error"></div>
     </div>
 
     <div style="clear: both;"></div>
@@ -57,6 +46,34 @@
     <div style="clear: both;"></div>
 </div> <!-- /container -->
 
+<script type="text/javascript">
+    var UI = {
+        el: function(id) {
+            return document.getElementById(id);
+        },
+        html: function(id, html) {
+            return this.el(id).innerHTML = html;
+        }
+    };
+
+    var ChApp = new chatApp({
+        debug: true,
+        onConnect: function() {
+            UI.html('ws-status','<span class="online">Онлайн<span>');
+        },
+        onClose: function() {
+            UI.html('ws-status', 'Подключаюсь...');
+        }
+    });
+
+    var onSetNick = function(resp) {
+        if (resp.error) {
+            UI.html('nick-error', resp.error);
+            return false;
+        }
+        UI.html('nick-error', '');
+    };
+</script>
 
 </body>
 </html>

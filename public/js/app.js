@@ -1,9 +1,24 @@
-(function () {
-    var root = this;
+(function (global) {
 
     var _extend = function(obj1, obj2) {
         for(var i in obj2) obj1[i] = obj2[i];
         return obj1;
+    };
+
+    var _protocol = {
+        isValidProtocol : function (data) {
+            return (data &&
+            Object.prototype.toString.call( data ) === '[object Array]' &&
+            (data.length === 2 || data.length === 3))
+        },
+        parseData : function(dataArray) {
+            if( !this.isValidProtocol(dataArray) ) return false;
+            return {
+                event : dataArray[0],
+                data : dataArray[1],
+                uuid : dataArray[2] || null
+            }
+        }
     };
 
     var chatApp = function (opt) {
@@ -17,22 +32,61 @@
         }, opt);
 
         self.socket = null;
+        self._protocol = _protocol;
         self.UUIDhistory = [];
 
         self.wsOpen();
     };
 
-    chatApp.prototype.sendNick = function (nick) {
-        var self = this;
-        console.log('nick', nick);
-        if (self.socket.readyState !== 1) return false;
-        self.emit('setNick', nick);
+    chatApp.prototype.emit = function(event, data, callback) {
+        data = (data === undefined) ? null : data;
+        callback = callback || function() {};
+
+        var self = this,
+            uuid = self.generateUUID(),
+            req = [event, data, uuid];
+
+        self.UUIDhistory[uuid] = {
+            callback: callback,
+            req: req,
+            status: null,
+            date: Math.floor(new Date().getTime() / 1000)
+        };
+
+        return self.socket.send(JSON.stringify(req));
     };
 
-    chatApp.prototype.emit = function(event, data) {
-        data = (data === undefined) ? null : data;
-        return this.socket.send(JSON.stringify([event, data]));
+    chatApp.prototype.Events = {
+        'response': function(resp) {
+            var self = this;
+
+            for (var uuid in self.UUIDhistory) {
+
+                if ( !self.UUIDhistory.hasOwnProperty(uuid) ) {
+                    return false;
+                }
+
+                var item = self.UUIDhistory[uuid];
+                item.status = 200;
+
+                if (uuid === resp.uuid) {
+                    item.callback(resp.data);
+                    delete self.UUIDhistory[uuid];
+                }
+            }
+        },
+        'error': function(req) {
+            alert('WS error:' + req.data + ' uuid:' + req.uuid);
+        }
     };
+
+    chatApp.prototype.sendNick = function (nick, cb) {
+        cb = cb || function() {};
+        var self = this;
+        if (self.socket.readyState !== 1) return false;
+        self.emit('setNick', nick, cb);
+    };
+
 
     chatApp.prototype.wsOpen = function () {
         var self = this;
@@ -61,14 +115,15 @@
         self.socket.onmessage = function(event) {
             if (self.options.debug)
                 console.debug('chatApp.ws:onmessage',event.data);
-            var data;
+            var dataArray;
             try {
-                data = JSON.parse(event.data);
-                if( data &&
-                    Object.prototype.toString.call( data ) === '[object Array]' &&
-                    data.length === 2 ) {
+                dataArray = JSON.parse(event.data);
+                if( _protocol.isValidProtocol(dataArray) ) {
+                    var req =_protocol.parseData(dataArray);
 
-                    console.log('->', data);
+                    if ( !Boolean(self.Events[req.event]) ) return false;
+
+                    self.Events[req.event].call(self, req);
                 } else {
                     return false;
                 }
@@ -96,12 +151,14 @@
             uuid = this.generateUUID();
         } else {
             this.UUIDhistory.push(uuid);
-            if (this.UUIDhistory.length > 100) this.UUIDhistory.splice(0,1); //max 100 element in history,  memory leaks fixed
+            if (this.UUIDhistory.length > 100) this.UUIDhistory.splice(0,1); //max 100 element in history
         }
         return uuid;
     };
 
-
+    if (typeof module !== 'undefined' && module.exports) {
+        module.exports = chatApp;
+    } else
     // AMD / RequireJS
     if (typeof define !== 'undefined' && define.amd) {
         define([], function () {
@@ -110,7 +167,7 @@
     }
     // included directly via <script> tag
     else {
-        root.chatApp = chatApp;
+        global.chatApp = chatApp;
     }
 
-}());
+}(this));

@@ -3,6 +3,11 @@
     color: #4cae4c;
 }
 
+#nick-error {
+  color: #d43f3a;
+}
+
+
 #chat-box {
   width: 100%;
   height: 452px;
