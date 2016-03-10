@@ -35,6 +35,10 @@ wsObserver.prototype.countUsers = function() {
     return Object.keys(this.users).length;
 };
 
+wsObserver.prototype.onJoinUser = function(nick) {
+    this.broadcast('join', nick)
+};
+
 wsObserver.prototype.Events = {
     'setNick': function(req, respond) {
         var self = this;
@@ -48,6 +52,7 @@ wsObserver.prototype.Events = {
 
         req.user.nick = req.data;
         respond({result: true});
+        self.onJoinUser( req.user.nick );
     }
 };
 

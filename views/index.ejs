@@ -35,7 +35,7 @@
         <div class="form-group">
             <input type="text" class="form-control" id="nick-input" placeholder="Enter Nick">
         </div>
-        <button onclick="ChApp.sendNick(document.getElementById('nick-input').value, onSetNick);" type="button" class="btn btn-default">Ok</button>
+        <button onclick="ChApp.sendNick(UI.el('nick-input').value, onSetNick);" type="button" class="btn btn-default">Ok</button>
         <div id="nick-error"></div>
     </div>
 

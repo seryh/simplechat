@@ -77,6 +77,9 @@
         },
         'error': function(req) {
             alert('WS error:' + req.data + ' uuid:' + req.uuid);
+        },
+        'join': function(nick) {
+            console.info('в чат вошел ', nick);
         }
     };
 
