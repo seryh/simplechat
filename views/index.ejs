@@ -72,16 +72,7 @@
         </div>
 
 
-        <div id="user-list" class="col-xs-6 col-md-4">
-            <table class="table" style="width: 150px;float: right;">
-                <tbody>
-                <tr> <td>jon</td></tr>
-                <tr> <td>jon</td></tr>
-                <tr> <td>jon</td></tr>
-                </tbody>
-            </table>
-        </div>
-
+        <div id="user-list" class="col-xs-6 col-md-4"></div>
 
         <div style="clear: both;"></div>
     </div>
@@ -101,11 +92,28 @@
         },
         html: function(id, html) {
             return this.el(id).innerHTML = html;
+        },
+        renderUserList: function(elID, userList) {
+            var html = '<table class="table table-user-list"><tbody>';
+
+            userList.forEach(function(user) {
+                html += '<tr><td>' + user.nick + '</td></tr>';
+            });
+
+            html += '</tbody></table>';
+
+            return this.html(elID, html);
         }
     };
 
     var ChApp = new chatApp({
         debug: true,
+        onJoin: function(nick) {
+
+        },
+        onMessage: function(msgData) {
+
+        },
         onConnect: function() {
             UI.html('ws-status','<span class="online">Онлайн<span>');
             UI.showEl('auth-box');
@@ -127,7 +135,8 @@
         UI.hideEl('auth-box');
 
         ChApp.getUsers(function(resp) {
-            console.log('users',resp.result);
+            if (resp.error) return false;
+            UI.renderUserList('user-list', resp.result);
         });
     };
 </script>

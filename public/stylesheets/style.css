@@ -40,6 +40,11 @@
   overflow-y: scroll;
 }
 
+.table-user-list {
+    width: 150px;
+    float: right;
+}
+
 #chat-box table td.chat-date {
   width: 50px;
 }
@@ -71,7 +76,7 @@
 }
 
 #chat-box .table {
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 
 .newmsg td {

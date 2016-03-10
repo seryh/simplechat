@@ -27,6 +27,8 @@
         self.options = _extend({
             debug: false,
             reconTimeout: 3000,
+            onMessage: function() {},
+            onJoin: function() {},
             onConnect: function() {},
             onClose: function() {}
         }, opt);
@@ -77,10 +79,13 @@
             alert('WS error:' + req.data + ' uuid:' + req.uuid);
         },
         'newMessage': function(dataMsg) {
-            //todo
+            var self = this;
+            self.options.onMessage(dataMsg);
         },
-        'join': function(nick) {
-            console.info('в чат вошел ', nick);
+        'join': function(req) {
+            var self = this;
+            self.options.onJoin(req.data);
+            console.info('Join to chat ', req.data);
         }
     };
 
