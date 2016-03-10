@@ -49,9 +49,9 @@ wsObserver.prototype.Events = {
 
         var self = this,
             msgData = {
-                data: new Date(),
+                date: new Date(),
                 nick: req.user.nick,
-                msg: req.data
+                msg: _.escape(req.data)
             };
 
         self.messages.push(msgData);

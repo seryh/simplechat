@@ -78,14 +78,15 @@
         'error': function(req) {
             alert('WS error:' + req.data + ' uuid:' + req.uuid);
         },
-        'newMessage': function(dataMsg) {
+        'newMessage': function(req) {
             var self = this;
-            self.options.onMessage(dataMsg);
+            self.options.onMessage(req.data);
         },
         'join': function(req) {
             var self = this;
             self.options.onJoin(req.data);
-            console.info('Join to chat ', req.data);
+            if (self.options.debug)
+                console.info('Join to chat ', req.data);
         }
     };
 
@@ -100,6 +101,13 @@
         var self = this;
         if (self.socket.readyState !== 1) return false;
         self.emit('message', msg);
+    };
+
+    chatApp.prototype.getMessages = function (cb) {
+        cb = cb || function() {};
+        var self = this;
+        if (self.socket.readyState !== 1) return false;
+        self.emit('getMessages', null, cb);
     };
 
     chatApp.prototype.getUsers = function (cb) {

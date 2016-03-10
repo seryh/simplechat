@@ -39,38 +39,14 @@
     <div id="chat-box-tools" style="display: none;">
 
         <div class="col-xs-12 col-md-8">
-            <div id="chat-box">
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th style="width: 200px;"></th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td><strong>dd.MM.yyyy HH:mm.ss</strong></td>
-                        <td>jon: hi all</td>
-                    </tr>
-                    <tr>
-                        <td><strong>dd.MM.yyyy HH:mm.ss</strong></td>
-                        <td>jon: hi all</td>
-                    </tr>
-                    <tr>
-                        <td><strong>dd.MM.yyyy HH:mm.ss</strong></td>
-                        <td>jon: hi all</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+            <div id="chat-box"></div>
             <div style="clear: both;"></div>
             <div id="msg-tool" class="form-group">
                 <textarea style="width: 650px; float: left;" class="form-control" rows="3" name="msg" id="msg-textarea"></textarea>
-                <button id="send-msg" type="button" class="btn btn-default">Send</button>
+                <button onclick="sendMessage();" id="send-msg" type="button" class="btn btn-default">Send</button>
                 <div style="clear: both;"></div>
             </div>
         </div>
-
 
         <div id="user-list" class="col-xs-6 col-md-4"></div>
 
@@ -80,9 +56,25 @@
 </div> <!-- /container -->
 
 <script type="text/javascript">
+
+    var messages = [];
+
+
     var UI = {
         el: function(id) {
             return document.getElementById(id);
+        },
+        formatDate : function(date) {
+            var hh = date.getHours().toString(),
+                mm = date.getMinutes().toString(),
+                dd = date.getDate().toString(),
+                mo = (date.getMonth()+1).toString(),
+                year = date.getFullYear();
+            if (hh.length < 2) hh = "0" + hh;
+            if (mm.length < 2) mm = "0" + mm;
+            if (dd.length < 2) dd = "0" + dd;
+            if (mo.length < 2) mo = "0" + mo;
+            return dd+'.'+mo+'.'+year +' '+hh+':'+mm;
         },
         showEl: function(id) {
             return this.el(id).style.display = 'block';
@@ -103,6 +95,19 @@
             html += '</tbody></table>';
 
             return this.html(elID, html);
+        },
+        renderMassageBox: function(elID, messages) {
+            var _self = this;
+            var html = '<table class="table"><tbody>';
+
+            messages.forEach(function(user) {
+                html += '<tr><td class="chat-date">' + _self.formatDate(new Date(user.date)) + '</td>';
+                html += '<td>' + user.nick +':'+ user.msg + '</td></tr>';
+            });
+
+            html += '</tbody></table>';
+
+            return this.html(elID, html);
         }
     };
 
@@ -112,7 +117,8 @@
 
         },
         onMessage: function(msgData) {
-
+            messages.push(msgData);
+            UI.renderMassageBox('chat-box', messages);
         },
         onConnect: function() {
             UI.html('ws-status','<span class="online">Онлайн<span>');
@@ -125,11 +131,17 @@
         }
     }).wsOpen();
 
+    var sendMessage = function() {
+        ChApp.sendMessage(UI.el('msg-textarea').value);
+        UI.el('msg-textarea').value = '';
+    };
+
     var onSetNick = function(resp) {
         if (resp.error) {
             UI.html('nick-error', resp.error);
             return false;
         }
+
         UI.html('nick-error', '');
         UI.showEl('chat-box-tools');
         UI.hideEl('auth-box');
@@ -138,6 +150,14 @@
             if (resp.error) return false;
             UI.renderUserList('user-list', resp.result);
         });
+
+        ChApp.getMessages(function(resp) {
+            if (resp.error) return false;
+            messages = resp.result;
+            UI.renderMassageBox('chat-box', messages);
+        });
+
+        //.value = '';
     };
 </script>
 
