@@ -111,7 +111,7 @@
         onClose: function() {
             UI.html('ws-status', 'Подключаюсь...');
         }
-    });
+    }).wsOpen();
 
     var onSetNick = function(resp) {
         if (resp.error) {

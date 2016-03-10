@@ -34,8 +34,6 @@
         self.socket = null;
         self._protocol = _protocol;
         self.UUIDhistory = [];
-
-        self.wsOpen();
     };
 
     chatApp.prototype.emit = function(event, data, callback) {
@@ -140,6 +138,8 @@
             if (self.options.debug)
                 console.error('chatApp.ws:onerror', error.message);
         };
+
+        return self;
     };
 
     chatApp.prototype.generateUUID = function () {
