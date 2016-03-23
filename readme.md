@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/seryh/simplechat.svg?branch=master)](https://travis-ci.org/seryh/simplechat)
 
+Пример простого чата с использованием WebSocket
+
 ##При разработке использовались
 node v0.12.2
 npm v2.7.4
